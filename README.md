@@ -68,9 +68,10 @@ No necesita ninguna API key ni backend — todo el cálculo es local.
 - El primer día de cada mes, GitHub Actions crea un recordatorio de revisión
   si no existe uno pendiente. Se puede ejecutar manualmente desde Actions.
 - GitHub también abre actualizaciones de dependencias con Dependabot.
-- UF y UTM se mantienen manuales por ahora. Para automatizarlas sin exponer
-  credenciales en el navegador, el siguiente paso es una acción programada
-  que consulte la API del Banco Central y publique datos estáticos.
+- UF y UTM se actualizan en `public/indicators.json` mediante una acción diaria
+  del Banco Central. Para activarla, crea el secreto de repositorio
+  `BCCH_API_TOKEN` con el token de la BDE; sin ese secreto, las calculadoras
+  siguen permitiendo ingresar los valores manualmente.
 
 ## Notas técnicas
 

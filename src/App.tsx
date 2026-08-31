@@ -8,9 +8,11 @@ import IVACalculator from "./components/IVACalculator";
 import ProjectBudgetCalculator from "./components/ProjectBudgetCalculator";
 import { encodeProjectBudget } from "./lib/projectSharing";
 import { useCalculatorsState } from "./hooks/useCalculatorsState";
+import { useOfficialIndicators } from "./hooks/useOfficialIndicators";
 
 export default function App() {
   const { state, setState, resetState, importState } = useCalculatorsState();
+  const indicators = useOfficialIndicators();
 
   function handleReset() {
     if (window.confirm("¿Restablecer todos los valores guardados en este dispositivo?")) {
@@ -128,6 +130,7 @@ export default function App() {
           <SueldoLiquidoCalculator
             state={state.sueldo}
             onChange={(sueldo) => setState({ ...state, sueldo })}
+            indicators={indicators}
           />
         )}
         {state.mode === "boleta" && (
@@ -137,7 +140,11 @@ export default function App() {
           />
         )}
         {state.mode === "uf" && (
-          <UFConverterCalculator state={state.uf} onChange={(uf) => setState({ ...state, uf })} />
+          <UFConverterCalculator
+            state={state.uf}
+            onChange={(uf) => setState({ ...state, uf })}
+            indicators={indicators}
+          />
         )}
         {state.mode === "iva" && (
           <IVACalculator state={state.iva} onChange={(iva) => setState({ ...state, iva })} />

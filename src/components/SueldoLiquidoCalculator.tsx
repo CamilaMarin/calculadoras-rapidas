@@ -1,15 +1,26 @@
+import { useEffect } from "react";
 import NumberField from "./NumberField";
 import ResultDisplay from "./ResultDisplay";
 import { formatMoney, safeNumber } from "../lib/format";
 import { calcularBrutoDesdeLiquido, calcularSueldoDesdeBruto } from "../lib/sueldoLiquido";
 import type { SueldoLiquidoState } from "../lib/types";
+import type { OfficialIndicators } from "../lib/indicators";
 
 interface Props {
   state: SueldoLiquidoState;
   onChange: (state: SueldoLiquidoState) => void;
+  indicators: OfficialIndicators | null;
 }
 
-export default function SueldoLiquidoCalculator({ state, onChange }: Props) {
+export default function SueldoLiquidoCalculator({ state, onChange, indicators }: Props) {
+  useEffect(() => {
+    const valorUTM = state.valorUTM || indicators?.utm || 0;
+    const valorUF = state.valorUF || indicators?.uf || 0;
+    if (valorUTM !== state.valorUTM || valorUF !== state.valorUF) {
+      onChange({ ...state, valorUTM, valorUF });
+    }
+  }, [indicators, onChange, state]);
+
   const monto = safeNumber(state.montoInput);
   const params = {
     comisionAFP: state.comisionAFP,
@@ -30,8 +41,9 @@ export default function SueldoLiquidoCalculator({ state, onChange }: Props) {
   return (
     <div>
       <div className="border border-line-strong bg-paper-dark p-4 font-mono text-xs leading-relaxed text-ink-soft">
-        Esto es una estimación educativa, no un consejo tributario. Verifica
-        el valor de la UTM del mes en{" "}
+        Esto es una estimación educativa, no un consejo tributario. Los valores
+        de UF y UTM se cargan desde el Banco Central cuando están disponibles;
+        puedes modificarlos para usar otra fecha. Verifica la información en{" "}
         <a href="https://www.sii.cl" target="_blank" rel="noreferrer" className="underline">
           sii.cl
         </a>{" "}
