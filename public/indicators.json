@@ -1,7 +1,11 @@
 {
   "source": "Banco Central de Chile",
   "sourceUrl": "https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/index_API_sec1_es.htm",
-  "updatedAt": null,
-  "uf": null,
-  "utm": null
+  "updatedAt": "2026-08-31T11:30:07.993Z",
+  "uf": 40873.77,
+  "utm": 71649,
+  "observations": {
+    "ufDate": "31-08-2026",
+    "utmDate": "01-08-2026"
+  }
 }
