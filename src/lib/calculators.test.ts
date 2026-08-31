@@ -3,6 +3,7 @@ import { brutoALiquido, liquidoABruto } from "./boletaHonorarios";
 import { calcularImpuestoUnico } from "./impuestoUnico";
 import { agregarIVA, quitarIVA } from "./iva";
 import { calculateProjectBudget } from "./projectBudget";
+import { decodeProjectBudget, encodeProjectBudget } from "./projectSharing";
 import { calcularBrutoDesdeLiquido, calcularSueldoDesdeBruto } from "./sueldoLiquido";
 
 describe("IVA", () => {
@@ -66,5 +67,19 @@ describe("presupuesto de proyecto", () => {
       iva: 94_050,
       total: 589_050,
     });
+  });
+
+  it("codifica un presupuesto para compartirlo por enlace", () => {
+    const budget = {
+      designHours: 4,
+      developmentHours: 10,
+      meetingsHours: 2,
+      hourlyRate: 25_000,
+      externalCosts: 50_000,
+      bufferPercent: 10,
+      includesIVA: true,
+    };
+
+    expect(decodeProjectBudget(encodeProjectBudget(budget))).toEqual(budget);
   });
 });

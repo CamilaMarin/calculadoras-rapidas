@@ -1,7 +1,8 @@
-// Tasa de retención de boleta de honorarios vigente desde el 1 de enero
-// de 2026 (sube gradualmente por ley hasta 17% en 2028 — revisar en
-// sii.cl si esto se usa más adelante en el tiempo).
-export const TASA_RETENCION_2026 = 0.1525;
+import { REGULATORY_RULES } from "./regulatory";
+
+// Vigente desde el 1 de enero de 2026. Revisar el registro centralizado
+// antes de usar la calculadora para años posteriores.
+export const TASA_RETENCION_2026 = REGULATORY_RULES.honorarios.withholdingRate;
 
 export function brutoALiquido(bruto: number): { retencion: number; liquido: number } {
   const retencion = bruto * TASA_RETENCION_2026;

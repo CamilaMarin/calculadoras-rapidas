@@ -24,6 +24,8 @@ finanzas. Todos los cálculos se actualizan en vivo, sin botón "calcular".
 - Las siete recalculan en vivo, y los últimos valores ingresados en todas
   se guardan solos en el dispositivo (localStorage). Puedes restablecerlos
   desde el encabezado.
+- Los presupuestos web se pueden guardar como plantillas y compartir mediante
+  un enlace. También puedes exportar o importar un respaldo de todos tus datos.
 
 ## Sobre la calculadora de sueldo líquido
 
@@ -58,6 +60,17 @@ npm test
    `vite.config.ts`.
 
 No necesita ninguna API key ni backend — todo el cálculo es local.
+
+## Mantención
+
+- Las constantes normativas están reunidas en `src/lib/regulatory.ts`, con
+  enlace a la fuente oficial y fecha de revisión.
+- El primer día de cada mes, GitHub Actions crea un recordatorio de revisión
+  si no existe uno pendiente. Se puede ejecutar manualmente desde Actions.
+- GitHub también abre actualizaciones de dependencias con Dependabot.
+- UF y UTM se mantienen manuales por ahora. Para automatizarlas sin exponer
+  credenciales en el navegador, el siguiente paso es una acción programada
+  que consulte la API del Banco Central y publique datos estáticos.
 
 ## Notas técnicas
 

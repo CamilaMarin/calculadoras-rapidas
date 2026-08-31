@@ -62,6 +62,12 @@ export interface ProjectBudgetState {
   includesIVA: boolean;
 }
 
+export interface ProjectBudgetTemplate {
+  id: string;
+  name: string;
+  budget: ProjectBudgetState;
+}
+
 export type CalculatorMode =
   | "website"
   | "project"
@@ -80,6 +86,7 @@ export interface CalculatorsState {
   uf: UFConverterState;
   iva: IVAState;
   project: ProjectBudgetState;
+  projectTemplates: ProjectBudgetTemplate[];
 }
 
 export const defaultState: CalculatorsState = {
@@ -127,6 +134,7 @@ export const defaultState: CalculatorsState = {
     bufferPercent: 10,
     includesIVA: true,
   },
+  projectTemplates: [],
 };
 
 export function createDefaultState(): CalculatorsState {

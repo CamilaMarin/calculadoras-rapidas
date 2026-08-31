@@ -6,15 +6,44 @@ import BoletaHonorariosCalculator from "./components/BoletaHonorariosCalculator"
 import UFConverterCalculator from "./components/UFConverterCalculator";
 import IVACalculator from "./components/IVACalculator";
 import ProjectBudgetCalculator from "./components/ProjectBudgetCalculator";
+import { encodeProjectBudget } from "./lib/projectSharing";
 import { useCalculatorsState } from "./hooks/useCalculatorsState";
 
 export default function App() {
-  const { state, setState, resetState } = useCalculatorsState();
+  const { state, setState, resetState, importState } = useCalculatorsState();
 
   function handleReset() {
     if (window.confirm("¿Restablecer todos los valores guardados en este dispositivo?")) {
       resetState();
     }
+  }
+
+  function downloadBackup() {
+    const file = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "calculadoras-rapidas-respaldo.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function handleImport(file: File | undefined) {
+    if (!file) return;
+
+    try {
+      const imported = JSON.parse(await file.text());
+      if (!importState(imported)) throw new Error("Formato no válido");
+    } catch {
+      window.alert("No pudimos importar ese archivo. Elige un respaldo generado por esta aplicación.");
+    }
+  }
+
+  function buildProjectShareLink() {
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.searchParams.set("project", encodeProjectBudget(state.project));
+    return url.toString();
   }
 
   return (
@@ -30,13 +59,31 @@ export default function App() {
             sin backend.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={handleReset}
-          className="border border-line-strong px-3 py-2 font-mono text-xs uppercase tracking-wide text-ink-soft hover:border-ink hover:text-ink"
-        >
-          Restablecer datos
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <label className="cursor-pointer border border-line-strong px-3 py-2 font-mono text-xs uppercase tracking-wide text-ink-soft hover:border-ink hover:text-ink">
+            Importar respaldo
+            <input
+              type="file"
+              accept="application/json"
+              className="sr-only"
+              onChange={(event) => void handleImport(event.target.files?.[0])}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={downloadBackup}
+            className="border border-line-strong px-3 py-2 font-mono text-xs uppercase tracking-wide text-ink-soft hover:border-ink hover:text-ink"
+          >
+            Exportar respaldo
+          </button>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="border border-line-strong px-3 py-2 font-mono text-xs uppercase tracking-wide text-ink-soft hover:border-ink hover:text-ink"
+          >
+            Restablecer datos
+          </button>
+        </div>
       </div>
 
       <CalculatorTabs mode={state.mode} onChange={(mode) => setState({ ...state, mode })} />
@@ -63,6 +110,18 @@ export default function App() {
           <ProjectBudgetCalculator
             state={state.project}
             onChange={(project) => setState({ ...state, project })}
+            templates={state.projectTemplates}
+            onSaveTemplate={(template) =>
+              setState({ ...state, projectTemplates: [...state.projectTemplates, template] })
+            }
+            onLoadTemplate={(project) => setState({ ...state, project })}
+            onDeleteTemplate={(id) =>
+              setState({
+                ...state,
+                projectTemplates: state.projectTemplates.filter((template) => template.id !== id),
+              })
+            }
+            shareLink={buildProjectShareLink()}
           />
         )}
         {state.mode === "sueldo" && (

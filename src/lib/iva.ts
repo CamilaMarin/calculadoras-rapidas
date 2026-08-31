@@ -1,4 +1,6 @@
-export const TASA_IVA = 0.19;
+import { REGULATORY_RULES } from "./regulatory";
+
+export const TASA_IVA = REGULATORY_RULES.iva.rate;
 
 export function agregarIVA(neto: number): { iva: number; total: number } {
   const iva = neto * TASA_IVA;

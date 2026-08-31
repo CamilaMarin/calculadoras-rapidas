@@ -1,0 +1,37 @@
+name: Regulatory data review reminder
+
+on:
+  schedule:
+    - cron: "0 12 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const title = "Review regulatory calculator data";
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100,
+            });
+
+            if (issues.some((issue) => issue.title === title)) {
+              core.info("An open regulatory review issue already exists.");
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body: `## Monthly review\n\n- [ ] Check UF and UTM sources\n- [ ] Check SII income-tax table and honorarios withholding\n- [ ] Check AFP/health and unemployment-insurance caps\n- [ ] Update \`src/lib/regulatory.ts\` with source and review date\n- [ ] Run \`npm test\` and deploy`,
+            });

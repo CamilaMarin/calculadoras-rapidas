@@ -1,12 +1,13 @@
 import { calcularImpuestoUnico } from "./impuestoUnico";
 import { safeNumber } from "./format";
+import { REGULATORY_RULES } from "./regulatory";
 
 // Topes imponibles vigentes (en UF) para AFP/salud y para seguro de
 // cesantía — sobre estos montos, el descuento se calcula solo hasta el
 // tope, no sobre el sueldo completo. Afecta principalmente a sueldos
 // altos.
-const TOPE_AFP_SALUD_UF = 90;
-const TOPE_CESANTIA_UF = 135.2;
+const TOPE_AFP_SALUD_UF = REGULATORY_RULES.cotizaciones.afpAndHealthCapUF;
+const TOPE_CESANTIA_UF = REGULATORY_RULES.cotizaciones.unemploymentInsuranceCapUF;
 
 export interface SueldoParams {
   comisionAFP: number; // %, además del 10% obligatorio
