@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { defaultState, type CalculatorsState } from "../lib/types";
+import { createDefaultState, defaultState, type CalculatorsState } from "../lib/types";
 
 const STORAGE_KEY = "calculadoras-rapidas-estado";
 
@@ -7,17 +7,21 @@ export function useCalculatorsState() {
   const [state, setState] = useState<CalculatorsState>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return defaultState;
+      if (!raw) return createDefaultState();
       const parsed = JSON.parse(raw);
-      // merge superficial por si en el futuro se agregan campos nuevos
       return {
         ...defaultState,
         ...parsed,
         website: { ...defaultState.website, ...parsed.website },
         freelance: { ...defaultState.freelance, ...parsed.freelance },
+        sueldo: { ...defaultState.sueldo, ...parsed.sueldo },
+        boleta: { ...defaultState.boleta, ...parsed.boleta },
+        uf: { ...defaultState.uf, ...parsed.uf },
+        iva: { ...defaultState.iva, ...parsed.iva },
+        project: { ...defaultState.project, ...parsed.project },
       };
     } catch {
-      return defaultState;
+      return createDefaultState();
     }
   });
 
@@ -25,5 +29,10 @@ export function useCalculatorsState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
 
-  return { state, setState };
+  function resetState() {
+    localStorage.removeItem(STORAGE_KEY);
+    setState(createDefaultState());
+  }
+
+  return { state, setState, resetState };
 }
